@@ -1,0 +1,44 @@
+{
+  "name": "rebelcode/wp-plugin-sdk",
+  "description": "An SDK used by RebelCode to build WordPress plugins.",
+  "type": "library",
+  "license": "GPL-3.0-or-later",
+  "authors": [
+    {
+      "name": "RebelCode",
+      "email": "dev@rebelcode.com",
+      "role": "Developer"
+    }
+  ],
+  "require": {
+    "php": ">= 7.2",
+    "ext-json": "*",
+    "dhii/services": "^0.1.1-alpha2",
+    "dhii/containers": "^v0.1.4",
+    "psr/container": "1.1.1"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^8.5",
+    "symfony/console": "^5.0",
+    "roots/wordpress-no-content": ">= 6.0",
+    "brain/monkey": "^2.6",
+    "mockery/mockery": "1.3.x-dev",
+    "mikey179/vfsstream": "2.0.x-dev"
+  },
+  "autoload": {
+    "psr-4": {
+      "RebelCode\\WpSdk\\": "./src",
+      "RebelCode\\WpSdk\\Cli\\": "./cli"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "RebelCode\\WpSdk\\Tests\\": "./tests"
+    }
+  },
+  "config": {
+    "platform": {
+      "php": "7.2.5"
+    }
+  }
+}
