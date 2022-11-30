@@ -15,8 +15,6 @@ composer require rebelcode/wp-plugin-sdk
 
 ## Usage
 
-Full documentation can be found in the [docs](docs) directory.
-
 Here's a quick example:
 
 ```php
@@ -71,6 +69,10 @@ class MyShortcodeModule extends Module
 }
 ```
 
+The full documentation can be found in the repository's [Wiki].
+
 ## License
 
 GPL-3.0+ © RebelCode
+
+[Wiki]: https://github.com/rebelcode/wp-plugin-sdk/wiki
