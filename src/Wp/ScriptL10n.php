@@ -2,6 +2,8 @@
 
 namespace RebelCode\WpSdk\Wp;
 
+use Dhii\Services\Factory;
+
 class ScriptL10n
 {
     /** @var string */
@@ -31,5 +33,13 @@ class ScriptL10n
     public function localizeFor(string $id): bool
     {
         return wp_localize_script($id, $this->name, $this->data);
+    }
+
+    /** Creates a factory service. */
+    public static function factory(string $name, array $data): Factory
+    {
+        return new Factory([], function () use ($name, $data) {
+            return new self($name, $data);
+        });
     }
 }
