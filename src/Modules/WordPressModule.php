@@ -83,7 +83,7 @@ class WordPressModule extends Module
             'db' => new GlobalVar('wpdb'),
             'post_types' => new Value([]),
             'notices' => new Value([]),
-            'notices/manager' => NoticeManager::factory('@plugin/code', 'notices'),
+            'notices/manager' => NoticeManager::factory('@plugin/short_id', 'notices'),
             'admin_menus' => new Value([]),
             'cron_jobs' => new Value([]),
             'rest_endpoints' => new Value([]),
