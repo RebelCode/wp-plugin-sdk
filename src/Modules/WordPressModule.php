@@ -57,7 +57,7 @@ class WordPressModule extends Module
                 }
             ),
 
-            'admin_init' => new Handler(
+            'admin_menu' => new Handler(
                 ['admin_menus'],
                 function (array $menus) {
                     foreach ($menus as $menu) {
