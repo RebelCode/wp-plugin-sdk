@@ -75,8 +75,8 @@ class NoticeManager
     /** Handles a notice dismissal request */
     public function handleAjax(array $postRequest): bool
     {
-        $id = filter_var($postRequest['notice'] ?? null, FILTER_DEFAULT);
-        $nonce = filter_var($postRequest['nonce'] ?? null, FILTER_DEFAULT);
+        $id = filter_var($postRequest['notice'] ?? null);
+        $nonce = filter_var($postRequest['nonce'] ?? null);
 
         if (wp_verify_nonce($nonce, $this->nonceAction)) {
             if (array_key_exists($id, $this->notices)) {
