@@ -13,9 +13,6 @@ class Handler extends Service
 {
     use ResolveKeysCapableTrait;
 
-    /** @var string[] */
-    public $deps;
-
     /** @var callable */
     public $handler;
 
@@ -44,7 +41,7 @@ class Handler extends Service
     public function __invoke(ContainerInterface $c): callable
     {
         return function (...$hookArgs) use ($c) {
-            $depArgs = $this->resolveKeys($c, $this->deps);
+            $depArgs = $this->resolveKeys($c, $this->dependencies);
             $allArgs = array_merge($hookArgs, $depArgs);
             // Call the handler, passing the hook args first and the dependencies second.
             return call_user_func_array($this->handler, $allArgs);
