@@ -56,6 +56,10 @@ class PluginMeta
     /** Creates an instance from the data parsed from the plugin's header. */
     public static function parseFromPluginHeader(string $filePath): ?self
     {
+        if (!function_exists('get_plugin_data')) {
+            require_once(ABSPATH . 'wp-admin/includes/plugin.php');
+        }
+
         $data = get_plugin_data($filePath, false, false);
 
         $pluginMeta = new self();
