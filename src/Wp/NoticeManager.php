@@ -72,6 +72,15 @@ class NoticeManager
         }
     }
 
+    /** Hooks the notice manager into WordPress to handle AJAX requests. */
+    public function listenForRequests()
+    {
+        add_action('wp_ajax_' . $this->ajaxAction, function () {
+            $this->handleAjax($_POST);
+            die;
+        });
+    }
+
     /** Handles a notice dismissal request */
     public function handleAjax(array $postRequest): bool
     {

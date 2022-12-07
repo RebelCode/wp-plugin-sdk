@@ -4,6 +4,7 @@ namespace RebelCode\WpSdk\Modules;
 
 use Dhii\Services\Factories\GlobalVar;
 use Dhii\Services\Factories\Value;
+use Psr\Container\ContainerInterface;
 use RebelCode\WpSdk\Handler;
 use RebelCode\WpSdk\Module;
 use RebelCode\WpSdk\Wp\AdminMenu;
@@ -20,6 +21,12 @@ use WP_Block_Type;
  */
 class WordPressModule extends Module
 {
+    /** @inheritDoc */
+    public function run(ContainerInterface $c): void
+    {
+        $c->get('notices/manager')->listenForRequests();
+    }
+
     /** @inheritDoc */
     public function getHooks(): array
     {
@@ -51,12 +58,8 @@ class WordPressModule extends Module
             ),
 
             'admin_init' => new Handler(
-                ['admin_menus', 'notices/manager'],
-                function (array $menus, NoticeManager $manager) {
-                    if (!$manager->handleAjax($_POST)) {
-                        die;
-                    }
-
+                ['admin_menus'],
+                function (array $menus) {
                     foreach ($menus as $menu) {
                         /** @var $menu AdminMenu */
                         $menu->register();
