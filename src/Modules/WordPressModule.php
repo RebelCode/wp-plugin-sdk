@@ -51,7 +51,7 @@ class WordPressModule extends Module
             ),
 
             'admin_init' => new Handler(
-                ['menus', 'notices/manager'],
+                ['admin_menus', 'notices/manager'],
                 function (array $menus, NoticeManager $manager) {
                     if (!$manager->handleAjax($_POST)) {
                         die;
