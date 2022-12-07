@@ -55,7 +55,7 @@ class PluginModule extends Module
         return [
             'admin_init' => [
                 new Handler(
-                    ['short_id', 'activation_transient'],
+                    ['short_id', 'activation_marker'],
                     function (string $prefix, AbstractOption $transient) {
                         if (is_admin() && $transient->getValue()) {
                             $transient->delete();
