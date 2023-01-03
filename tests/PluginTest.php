@@ -13,6 +13,7 @@ class PluginTest extends TestCase
     {
         $pluginFile = __DIR__ . '/Stubs/plugin.php';
 
+        expect('get_plugin_data')->once()->andReturn([]);
         expect('plugin_dir_url')->once()->with($pluginFile)->andReturn('/not/important');
         expect('register_activation_hook')->once()->with($pluginFile, Mockery::type('callable'));
         expect('register_deactivation_hook')->once()->with($pluginFile, Mockery::type('callable'));
