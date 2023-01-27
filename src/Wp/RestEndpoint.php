@@ -114,26 +114,13 @@ class RestEndpoint
         string $ns,
         string $route,
         array $methods,
-        string $handlerClass,
-        array $handlerArgs = [],
+        string $handlerServiceId,
         ?string $authId = null
     ): Factory {
         return new Factory(
-            [$authId],
-            function (RestAuthGuard $authHandler) use (
-                $ns,
-                $route,
-                $methods,
-                $handlerClass,
-                $handlerArgs
-            ) {
-                return new RestEndpoint(
-                    $ns,
-                    $route,
-                    $methods,
-                    new $handlerClass(...$handlerArgs),
-                    $authHandler
-                );
+            [$handlerServiceId, $authId],
+            function (RestEndpointHandler $handler, RestAuthGuard $auth) use ($ns, $route, $methods) {
+                return new RestEndpoint($ns, $route, $methods, $handler, $auth);
             }
         );
     }

@@ -44,37 +44,25 @@ class RestEndpointTest extends TestCase
         $namespace = 'foo';
         $route = 'bar';
         $methods = ['GET', 'POST'];
+        $handlerId = 'my_handler';
+        $handler = $this->createMock(RestEndpointHandler::class);
+        $authId = 'my_auth';
         $auth = $this->createMock(RestAuthGuard::class);
 
-        $handlerClass = get_class(new class(0, 0) implements RestEndpointHandler {
-            public $arg1;
-
-            public $arg2;
-
-            public function __construct($arg1, $arg2)
-            {
-                $this->arg1 = $arg1;
-                $this->arg2 = $arg2;
-            }
-
-            public function handle(WP_REST_Request $request)
-            {
-            }
-        });
-
-        $factory = RestEndpoint::factory($namespace, $route, $methods, $handlerClass, ['one', 'two'], 'auth');
+        $factory = RestEndpoint::factory($namespace, $route, $methods, $handlerId, $authId);
 
         $c = $this->createMock(ContainerInterface::class);
-        $c->expects($this->once())->method('get')->with('auth')->willReturn($auth);
+        $c->expects($this->exactly(2))
+          ->method('get')
+          ->withConsecutive([$handlerId], [$authId])
+          ->willReturnOnConsecutiveCalls($handler, $auth);
 
         $endpoint = $factory($c);
 
         $this->assertSame($namespace, $endpoint->namespace);
         $this->assertSame($route, $endpoint->route);
         $this->assertSame($methods, $endpoint->methods);
-        $this->assertInstanceOf($handlerClass, $endpoint->handler);
-        $this->assertEquals('one', $endpoint->handler->arg1);
-        $this->assertEquals('two', $endpoint->handler->arg2);
+        $this->assertSame($handler, $endpoint->handler);
         $this->assertSame($auth, $endpoint->authHandler);
     }
 
