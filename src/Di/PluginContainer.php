@@ -65,7 +65,7 @@ class PluginContainer implements ContainerInterface
                         $service = ($this->extensions[$id])($this, $service);
                     }
                 } catch (ContainerException $ex) {
-                    throw new ContainerException("Failed to create service \"${id}\" - " . $ex->getMessage(), 0, $ex);
+                    throw new ContainerException("Failed to create service \"{$id}\" - " . $ex->getMessage(), 0, $ex);
                 }
 
                 $this->cache[$id] = $service;
