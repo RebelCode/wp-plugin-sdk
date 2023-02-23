@@ -26,6 +26,6 @@ class OverrideExtension extends Service
     /** @inheritDoc */
     public function __invoke(ContainerInterface $c)
     {
-        return $this->resolveKeys($c, $this->dependencies)[0];
+        return $this->resolveDeps($c, $this->dependencies)[0];
     }
 }
