@@ -3,8 +3,13 @@
 namespace RebelCode\WpSdk\Wp;
 
 use Dhii\Services\Factory;
+use Dhii\Services\Service;
 
-/** A script asset implementation. */
+/**
+ * A script asset implementation.
+ *
+ * @psalm-import-type ServiceRef from Service
+ */
 class Script extends Asset
 {
     /** @var ScriptL10n|null */
@@ -61,7 +66,7 @@ class Script extends Asset
      * @param string $url The URL of the script file.
      * @param string|null $version The version number.
      * @param array $deps The IDs of the script's dependencies.
-     * @param string|null $l10nId The ID of the service that provides the localization data.
+     * @param ServiceRef|null $l10n Optional service for the localization data.
      * @return Factory The factory for the script.
      */
     public static function factory(
@@ -69,12 +74,12 @@ class Script extends Asset
         string $url,
         string $version = null,
         array $deps = [],
-        ?string $l10nId = null
+        $l10n = null
     ): Factory {
         $serviceDeps = ['@plugin/dir_url'];
 
-        if ($l10nId !== null) {
-            $serviceDeps[] = $l10nId;
+        if ($l10n !== null) {
+            $serviceDeps[] = $l10n;
         }
 
         return new Factory(

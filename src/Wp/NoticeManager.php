@@ -3,7 +3,11 @@
 namespace RebelCode\WpSdk\Wp;
 
 use Dhii\Services\Factory;
+use Dhii\Services\Service;
 
+/**
+ * @psalm-import-type ServiceRef from Service
+ */
 class NoticeManager
 {
     /** @var string */
@@ -118,10 +122,15 @@ class NoticeManager
         return sprintf('<script type="text/javascript">%s</script>', $jsCode);
     }
 
-    /** Creates a factory for a notice manager. */
-    public static function factory(string $pluginCodeService, string $noticesService): Factory
+    /**
+     * Creates a factory for a notice manager.
+     *
+     * @param ServiceRef $pluginCode The plugin code.
+     * @param ServiceRef $notices The notices.
+     */
+    public static function factory($pluginCode, $notices): Factory
     {
-        return new Factory([$pluginCodeService, $noticesService], function (string $code, array $notices) {
+        return new Factory([$pluginCode, $notices], function (string $code, array $notices) {
             return NoticeManager::create($code, $notices);
         });
     }

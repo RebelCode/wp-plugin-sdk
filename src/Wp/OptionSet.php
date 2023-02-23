@@ -3,7 +3,11 @@
 namespace RebelCode\WpSdk\Wp;
 
 use Dhii\Services\Factory;
+use Dhii\Services\Service;
 
+/**
+ * @psalm-import-type ServiceRef from Service
+ */
 class OptionSet
 {
     /** @var AbstractOption[] An associative array of options. */
@@ -91,12 +95,12 @@ class OptionSet
     /**
      * Creates a factory for an option set.
      *
-     * @param string[] $optionsIds An array containing the IDs of the options to include in the set.
+     * @param ServiceRef[] $options An array containing the services of the options to include in the set.
      * @return Factory The created factory.
      */
-    public static function factory(array $optionsIds): Factory
+    public static function factory(array $options): Factory
     {
-        return new Factory($optionsIds, function (AbstractOption ...$options) {
+        return new Factory($options, function (AbstractOption ...$options) {
             return new OptionSet($options);
         });
     }

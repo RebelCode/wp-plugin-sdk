@@ -3,12 +3,14 @@
 namespace RebelCode\WpSdk\Wp;
 
 use Dhii\Services\Factory;
+use Dhii\Services\Service;
 
 /**
  * Represents a WordPress transient in an immutable object form.
  *
  * @template T
  * @template-extends AbstractOption<T>
+ * @psalm-import-type ServiceRef from Service
  */
 class Transient extends AbstractOption
 {
@@ -57,18 +59,18 @@ class Transient extends AbstractOption
      * Creates a factory for a transient, for use in modules.
      *
      * @param string $name The option's name.
-     * @param OptionType|string $type The option's type instance or service ID.
+     * @param OptionType|ServiceRef $type The transient's type instance or a service that provides it.
      * @param int $expiry The number of seconds until the transient expires, or 0 for no expiration.
      * @param mixed|null $default The default value to use when the option does not exist.
      * @return Factory The created factory.
      */
     public static function factory(string $name, $type, int $expiry, $default = null): Factory
     {
-        if (is_string($type)) {
+        if ($type instanceof OptionType) {
+            $deps = [];
+        } else {
             $deps = [$type];
             $type = null;
-        } else {
-            $deps = [];
         }
 
         return new Factory($deps, function (?OptionType $typeDep = null) use ($type, $name, $default, $expiry) {

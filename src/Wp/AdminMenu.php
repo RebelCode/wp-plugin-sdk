@@ -3,8 +3,13 @@
 namespace RebelCode\WpSdk\Wp;
 
 use Dhii\Services\Factory;
+use Dhii\Services\Service;
 
-/** Represents a top-level WordPress admin menu. */
+/**
+ * Represents a top-level WordPress admin menu.
+ *
+ * @psalm-import-type ServiceRef from Service
+ */
 class AdminMenu
 {
     /** @var string */
@@ -81,18 +86,28 @@ class AdminMenu
         }
     }
 
-    /** Creates a factory for an admin menu, for use in modules. */
+    /**
+     * Creates a factory for an admin menu, for use in modules.
+     *
+     * @param ServiceRef $page The service for the page that the menu refers to.
+     * @param string $slug The slug name for the menu.
+     * @param string $label The label to show in the WP admin menu bar.
+     * @param string $cap The user capability required to show the menu and access the page.
+     * @param string $icon The icon to show near the menu's label in the WP admin menu bar.
+     * @param int|null $position The position of the menu in the WP admin menu bar.
+     * @param ServiceRef[] $items The services for the submenu items.
+     */
     public static function factory(
-        string $pageId,
+        $page,
         string $slug,
         string $label,
         string $cap,
         string $icon = '',
         ?int $position = null,
-        array $itemIds = []
+        array $items = []
     ): Factory {
         return new Factory(
-            array_merge([$pageId], $itemIds),
+            array_merge([$page], $items),
             function ($page, ...$items) use ($slug, $label, $cap, $icon, $position) {
                 return new self($page, $slug, $label, $cap, $icon, $position, $items);
             }

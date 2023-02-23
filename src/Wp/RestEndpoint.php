@@ -3,9 +3,13 @@
 namespace RebelCode\WpSdk\Wp;
 
 use Dhii\Services\Factory;
+use Dhii\Services\Service;
 use WP_Error;
 use WP_REST_Request;
 
+/**
+ * @psalm-import-type ServiceRef from Service
+ */
 class RestEndpoint
 {
     /** @var string */
@@ -109,16 +113,24 @@ class RestEndpoint
         };
     }
 
-    /** Creates a factory for an endpoint. */
+    /**
+     * Creates a factory for an endpoint.
+     *
+     * @param string $ns The namespace.
+     * @param string $route The route.
+     * @param string[] $methods The accepted HTTP methods.
+     * @param ServiceRef $handler The service for the handler.
+     * @param ServiceRef|null $auth The service for the auth guard, if any.
+     */
     public static function factory(
         string $ns,
         string $route,
         array $methods,
-        string $handlerServiceId,
-        ?string $authId = null
+        $handler,
+        $auth = null
     ): Factory {
         return new Factory(
-            [$handlerServiceId, $authId],
+            [$handler, $auth],
             function (RestEndpointHandler $handler, RestAuthGuard $auth) use ($ns, $route, $methods) {
                 return new RestEndpoint($ns, $route, $methods, $handler, $auth);
             }

@@ -3,8 +3,13 @@
 namespace RebelCode\WpSdk\Wp;
 
 use Dhii\Services\Factory;
+use Dhii\Services\Service;
 
-/** Represents a page that is shown in the WordPress Admin. */
+/**
+ * Represents a page that is shown in the WordPress Admin.
+ *
+ * @psalm-import-type ServiceRef from Service
+ */
 class AdminPage
 {
     /** @var string */
@@ -46,10 +51,15 @@ class AdminPage
         };
     }
 
-    /** Creates a factory for an admin page, for use in modules. */
-    public static function factory(string $title, string $renderFnId): Factory
+    /**
+     * Creates a factory for an admin page, for use in modules.
+     *
+     * @param string $title The title of the page, shown in the browser's tab.
+     * @param ServiceRef $renderFn The service for the function that returns the rendered contents of the page.
+     */
+    public static function factory(string $title, $renderFn): Factory
     {
-        return new Factory([$renderFnId], function ($renderFn) use ($title) {
+        return new Factory([$renderFn], function ($renderFn) use ($title) {
             return new self($title, $renderFn);
         });
     }

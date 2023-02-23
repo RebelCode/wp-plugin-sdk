@@ -3,7 +3,11 @@
 namespace RebelCode\WpSdk\Wp;
 
 use Dhii\Services\Factory;
+use Dhii\Services\Service;
 
+/**
+ * @psalm-import-type ServiceRef from Service
+ */
 class Notice
 {
     public const INFO = 'info';
@@ -151,15 +155,23 @@ class Notice
         return new self(self::WARNING, $id, $content, $isDismissible, $option);
     }
 
-    /** Creates a factory for a notice, for use in modules. */
+    /**
+     * Creates a factory for a notice, for use in modules.
+     *
+     * @param string $type The notice type. See the constants in this class.
+     * @param string $id The ID of the notice, used to identify the notice and also included in the notice HTML.
+     * @param string $content The content of the notice.
+     * @param bool $isDismissible Whether the notice can be dismissed.
+     * @param ServiceRef|null $option The service for the option to use to record if the notice has been dismissed.
+     */
     public static function factory(
         string $type,
         string $id,
         string $content,
         bool $isDismissible = false,
-        ?string $optionId = null
+        $option = null
     ): Factory {
-        $deps = $optionId ? [$optionId] : [];
+        $deps = $option ? [$option] : [];
 
         return new Factory($deps, function ($option = null) use ($type, $id, $content, $isDismissible) {
             return new self($type, $id, $content, $isDismissible, $option);

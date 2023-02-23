@@ -3,9 +3,13 @@
 namespace RebelCode\WpSdk\Wp;
 
 use Dhii\Services\Factory;
+use Dhii\Services\Service;
 use RebelCode\WpSdk\Wp\OptionType\DefaultType;
 
-/** @template T */
+/**
+ * @template T
+ * @psalm-import-type ServiceRef from Service
+ */
 class Option extends AbstractOption
 {
     /** Whether the option is autoloaded. */
@@ -51,18 +55,18 @@ class Option extends AbstractOption
      * Creates a factory for an option, for use in modules.
      *
      * @param string $name The option's name.
-     * @param OptionType|string $type The option's type instance or service ID.
+     * @param OptionType|ServiceRef $type The option's type, or service for the option's type.
      * @param mixed|null $default The default value to use when the option does not exist.
      * @param bool $autoload Whether to autoload the option.
      * @return Factory The created factory.
      */
     public static function factory(string $name, $type, $default = null, bool $autoload = false): Factory
     {
-        if (is_string($type)) {
+        if ($type instanceof OptionType) {
+            $deps = [];
+        } else {
             $deps = [$type];
             $type = null;
-        } else {
-            $deps = [];
         }
 
         return new Factory($deps, function (?OptionType $typeDep = null) use ($type, $name, $default, $autoload) {

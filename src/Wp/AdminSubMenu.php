@@ -3,8 +3,13 @@
 namespace RebelCode\WpSdk\Wp;
 
 use Dhii\Services\Factory;
+use Dhii\Services\Service;
 
-/** Represents a WordPress admin submenu that appears under a top-level menu. */
+/**
+ * Represents a WordPress admin submenu that appears under a top-level menu.
+ *
+ * @psalm-import-type ServiceRef from Service
+ */
 class AdminSubMenu
 {
     /** @var string */
@@ -102,15 +107,23 @@ class AdminSubMenu
         }
     }
 
-    /** Creates a factory for a page submenu, for use in modules. */
+    /**
+     * Creates a factory for a page submenu, for use in modules.
+     *
+     * @param ServiceRef $page The page service reference.
+     * @param string $slug The slug name for the submenu.
+     * @param string $label The label to show for this submenu in the WP admin menu bar.
+     * @param string $cap The user capability required to show the menu and access the page.
+     * @param int|null $pos The position of the submenu in its parent menu's container.
+     */
     public static function factoryForPage(
-        string $pageId,
+        $page,
         string $slug,
         string $label,
         string $cap,
         int $pos = null
     ): Factory {
-        return new Factory([$pageId], function ($page) use ($slug, $label, $cap, $pos) {
+        return new Factory([$page], function ($page) use ($slug, $label, $cap, $pos) {
             return self::forPage($page, $slug, $label, $cap, $pos);
         });
     }

@@ -3,8 +3,13 @@
 namespace RebelCode\WpSdk\Wp;
 
 use Dhii\Services\Factory;
+use Dhii\Services\Service;
 
-/** Represents a WordPress cron job. */
+/**
+ * Represents a WordPress cron job.
+ *
+ * @psalm-import-type ServiceRef from Service
+ */
 class CronJob
 {
     /** @var string */
@@ -147,14 +152,21 @@ class CronJob
         $this->schedule($time);
     }
 
-    /** Creates a factory for a cron job, for use in modules. */
+    /**
+     * Creates a factory for a cron job, for use in modules.
+     *
+     * @param string $hook The hook to trigger when the cron job is invoked.
+     * @param array $args Optional arguments to pass to cron job handlers.
+     * @param string|null $repeat Optional repetition schedule, or null for non-repeating jobs.
+     * @param ServiceRef[] $handlers Optional list of services for the handlers to register with the cron job.
+     */
     public static function factory(
         string $hook,
         array $args = [],
         string $repeat = null,
-        array $handlersIds = []
+        array $handlers = []
     ): Factory {
-        return new Factory($handlersIds, function (...$handlers) use ($hook, $args, $repeat) {
+        return new Factory($handlers, function (...$handlers) use ($hook, $args, $repeat) {
             return new self($hook, $args, $repeat, $handlers);
         });
     }
