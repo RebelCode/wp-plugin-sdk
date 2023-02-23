@@ -2,16 +2,17 @@
 
 namespace RebelCode\WpSdk\Wp;
 
-use WP_Error;
-use WP_REST_Request;
-use WP_REST_Response;
+use WP_Error as Error;
+use WP_REST_Request as Request;
+use WP_REST_Response as Response;
 
 interface RestEndpointHandler
 {
     /**
-     * Handles a request.
+     * Prepares a response for the given request.
      *
-     * @return WP_REST_Response|WP_Error
+     * @param Request $request The request.
+     * @return Response|Error The response or error.
      */
-    public function handle(WP_REST_Request $request);
+    public function handle(Request $request);
 }
