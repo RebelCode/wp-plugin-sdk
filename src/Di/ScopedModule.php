@@ -169,7 +169,9 @@ class ScopedModule extends Module
         }
 
         $dependencies = $service->getDependencies();
-        $dependencies = array_map([$this, 'applyPrefix'], $dependencies);
+        $dependencies = array_map(function ($dep) {
+            return is_string($dep) ? $this->applyPrefix($dep) : $dep;
+        }, $dependencies);
 
         return $service->withDependencies($dependencies);
     }
