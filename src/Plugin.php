@@ -20,6 +20,9 @@ class Plugin implements ContainerInterface
     /** @var ContainerInterface The plugin's DI container. */
     protected $container;
 
+    /** @var bool Whether the plugin has stopped running. */
+    protected $stopped = false;
+
     /**
      * Constructor.
      *
@@ -45,10 +48,26 @@ class Plugin implements ContainerInterface
         return $this->container->has($id);
     }
 
+    /** Stops running the plugin. */
+    public function stop(): void
+    {
+        $this->stopped = true;
+    }
+
+    /** Returns whether the plugin has stopped running. */
+    public function hasStopped(): bool
+    {
+        return $this->stopped;
+    }
+
     /** Runs the plugin. */
     public function run(): void
     {
         foreach ($this->modules as $module) {
+            if ($this->stopped) {
+                break;
+            }
+
             foreach ($module->getHooks() as $hook => $handlers) {
                 foreach ((array) $handlers as $handler) {
                     $handler->attach($hook, $this->container);

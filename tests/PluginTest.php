@@ -75,4 +75,57 @@ class PluginTest extends TestCase
 
         $plugin->run();
     }
+
+    public function testIsNotInitiallyStopped()
+    {
+        $c = $this->createMock(ContainerInterface::class);
+        $modules = [
+            $this->createMock(Module::class),
+            $this->createMock(Module::class),
+            $this->createMock(Module::class),
+        ];
+
+        $plugin = new Plugin(__DIR__, $c, $modules);
+
+        $this->assertFalse($plugin->hasStopped());
+    }
+
+    public function testCanBeStopped()
+    {
+        $c = $this->createMock(ContainerInterface::class);
+        $modules = [
+            $this->createMock(Module::class),
+            $this->createMock(Module::class),
+            $this->createMock(Module::class),
+        ];
+
+        $plugin = new Plugin(__DIR__, $c, $modules);
+        $plugin->stop();
+
+        $this->assertTrue($plugin->hasStopped());
+    }
+
+    public function testStopsRunningModulesWhenStopped()
+    {
+        $c = $this->createMock(ContainerInterface::class);
+        $modules = [
+            $this->createMock(Module::class),
+            $this->createMock(Module::class),
+            $this->createMock(Module::class),
+            $this->createMock(Module::class),
+        ];
+
+        $plugin = new Plugin(__DIR__, $c, $modules);
+
+        $modules[0]->expects($this->once())->method('run');
+        $modules[1]->expects($this->once())->method('run')->willReturnCallback(function ($c, Plugin $p) {
+            $p->stop();
+        });
+        $modules[2]->expects($this->never())->method('run');
+        $modules[3]->expects($this->never())->method('run');
+
+        $plugin->run();
+
+        $this->assertTrue($plugin->hasStopped());
+    }
 }
