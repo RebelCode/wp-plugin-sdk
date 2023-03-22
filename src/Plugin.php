@@ -55,7 +55,7 @@ class Plugin implements ContainerInterface
                 }
             }
 
-            $module->run($this->container);
+            $module->run($this->container, $this);
         }
     }
 

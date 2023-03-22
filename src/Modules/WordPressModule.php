@@ -7,6 +7,7 @@ use Dhii\Services\Factories\Value;
 use Psr\Container\ContainerInterface;
 use RebelCode\WpSdk\Handler;
 use RebelCode\WpSdk\Module;
+use RebelCode\WpSdk\Plugin;
 use RebelCode\WpSdk\Wp\AdminMenu;
 use RebelCode\WpSdk\Wp\NoticeManager;
 use RebelCode\WpSdk\Wp\RestEndpoint;
@@ -22,7 +23,7 @@ use WP_Block_Type;
 class WordPressModule extends Module
 {
     /** @inheritDoc */
-    public function run(ContainerInterface $c): void
+    public function run(ContainerInterface $c, Plugin $p): void
     {
         $c->get('notices/manager')->listenForRequests();
     }

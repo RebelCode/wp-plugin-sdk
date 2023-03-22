@@ -7,6 +7,7 @@ use Dhii\Services\Service;
 use Psr\Container\ContainerInterface;
 use RebelCode\WpSdk\Handler;
 use RebelCode\WpSdk\Module;
+use RebelCode\WpSdk\Plugin;
 
 /**
  * A module decorator that prefixes all of a module's services.
@@ -70,9 +71,10 @@ class ScopedModule extends Module
     }
 
     /** @inheritDoc */
-    public function run(ContainerInterface $c): void
+    public function run(ContainerInterface $c, Plugin $plugin): void
     {
-        $this->inner->run(new DeprefixingContainer($c, $this->prefix, false));
+        $container = new DeprefixingContainer($c, $this->prefix, false);
+        $this->inner->run($container, $plugin);
     }
 
     /**

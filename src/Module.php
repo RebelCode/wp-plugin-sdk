@@ -9,7 +9,7 @@ use Psr\Container\ContainerInterface;
 class Module
 {
     /** Runs the module */
-    public function run(ContainerInterface $c): void
+    public function run(ContainerInterface $c, Plugin $plugin): void
     {
     }
 

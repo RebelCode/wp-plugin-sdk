@@ -9,6 +9,7 @@ use RebelCode\WpSdk\Di\ScopedModule;
 use PHPUnit\Framework\TestCase;
 use RebelCode\WpSdk\Handler;
 use RebelCode\WpSdk\Module;
+use RebelCode\WpSdk\Plugin;
 use function Brain\Monkey\Functions\when;
 
 class ScopedModuleTest extends TestCase
@@ -106,11 +107,12 @@ class ScopedModuleTest extends TestCase
     public function testItShouldRunWithScopedServices()
     {
         $c = $this->createMock(ContainerInterface::class);
+        $p = $this->createMock(Plugin::class);
 
         $inner = $this->createMock(Module::class);
-        $inner->expects($this->once())->method('run')->with(new DeprefixingContainer($c, 'pre_', false));
+        $inner->expects($this->once())->method('run')->with(new DeprefixingContainer($c, 'pre_', false), $p);
 
         $module = new ScopedModule('pre_', $inner);
-        $module->run($c);
+        $module->run($c, $p);
     }
 }

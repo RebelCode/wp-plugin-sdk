@@ -8,6 +8,7 @@ use Psr\Container\ContainerInterface;
 use RebelCode\WpSdk\Handler;
 use RebelCode\WpSdk\Meta\PluginMeta;
 use RebelCode\WpSdk\Module;
+use RebelCode\WpSdk\Plugin;
 use RebelCode\WpSdk\Wp\AbstractOption;
 use RebelCode\WpSdk\Wp\Transient;
 use function plugin_dir_url;
@@ -34,7 +35,7 @@ class PluginModule extends Module
     }
 
     /** @inheritDoc */
-    public function run(ContainerInterface $c): void
+    public function run(ContainerInterface $c, Plugin $plugin): void
     {
         register_activation_hook($this->filePath, function () use ($c) {
             do_action($c->get('short_id') . $this->serviceDelim . 'early_activation');
