@@ -40,9 +40,9 @@ class PluginModule extends Module
         register_activation_hook($this->filePath, function () use ($c) {
             do_action($c->get('short_id') . $this->serviceDelim . 'early_activation');
 
-            /** @var AbstractOption $transient */
-            $transient = $c->get('transient');
-            $transient->setValue(true);
+            /** @var AbstractOption $marker */
+            $marker = $c->get('activation_marker');
+            $marker->setValue(true);
         });
 
         register_deactivation_hook($this->filePath, function () use ($c) {
@@ -57,9 +57,9 @@ class PluginModule extends Module
             'admin_init' => [
                 new Handler(
                     ['short_id', 'activation_marker'],
-                    function (string $prefix, AbstractOption $transient) {
-                        if (is_admin() && $transient->getValue()) {
-                            $transient->delete();
+                    function (string $prefix, AbstractOption $marker) {
+                        if (is_admin() && $marker->getValue()) {
+                            $marker->delete();
                             do_action($prefix . $this->serviceDelim . 'activation');
                         }
                     }
