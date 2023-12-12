@@ -57,6 +57,8 @@ class RestEndpointCallback
             $this->unregisterErrorHandler();
 
             return $response;
+        } catch (RestException $exception) {
+            return $exception->getResponse();
         } catch (Exception $exception) {
             return new WP_Error('internal_server_error', $exception->getMessage(), [
                 'status' => 500,
