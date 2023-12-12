@@ -7,6 +7,7 @@ use Throwable;
 use Traversable;
 use WP_Error;
 use WP_REST_Request;
+use WP_REST_Response;
 
 /** The callback passed to the WordPress REST API, that invokes a REST API endpoint handler. */
 class RestEndpointCallback
@@ -30,6 +31,7 @@ class RestEndpointCallback
         $this->handler = $handler;
     }
 
+    /** @return WP_REST_Response|WP_Error */
     public function __invoke(WP_REST_Request $request)
     {
         $this->responseSent = false;
@@ -56,17 +58,19 @@ class RestEndpointCallback
 
             return $response;
         } catch (Exception $exception) {
-            $this->sendError(
-                $exception->getCode(),
-                $exception->getMessage(),
-                $exception->getFile(),
-                $exception->getLine()
-            );
+            return new WP_Error('internal_server_error', $exception->getMessage(), [
+                'status' => 500,
+                'details' => [
+                    'code' => $exception->getCode(),
+                    'file' => $exception->getFile(),
+                    'line' => $exception->getLine(),
+                ],
+            ]);
         }
     }
 
     /** Registers the error handler that sends an erroneous response when an uncaught error is encountered. */
-    protected function registerErrorHandler()
+    protected function registerErrorHandler(): void
     {
         // Turn off WordPress' fatal error handler
         if (!defined('WP_SANDBOX_SCRAPING')) {
@@ -103,7 +107,7 @@ class RestEndpointCallback
     }
 
     /** Unregisters the error handlers. */
-    protected function unregisterErrorHandler()
+    protected function unregisterErrorHandler(): void
     {
         remove_filter('wp_should_handle_php_error', '__return_false');
         set_exception_handler($this->prevExHandler);
@@ -118,7 +122,7 @@ class RestEndpointCallback
      * @param int $line
      * @return never-returns
      */
-    protected function sendError($code, string $message = '', string $file = '', int $line = 0)
+    protected function sendError($code, string $message = '', string $file = '', int $line = 0): void
     {
         if ($this->responseSent) {
             return;
