@@ -74,7 +74,7 @@ class PluginModule extends Module
         return [
             'file_path' => new Value($this->filePath),
             'dir_path' => new Value(dirname($this->filePath)),
-            'dir_url' => new Value(plugin_dir_url($this->filePath)),
+            'dir_url' => new Value(rtrim(plugin_dir_url($this->filePath), '/')),
             'json_file' => new Value($this->filePath . '/plugin.json'),
 
             'meta' => new Factory(['json_file'], function (string $jsonFile) {
