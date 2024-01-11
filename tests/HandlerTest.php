@@ -38,4 +38,20 @@ class HandlerTest extends TestCase
 
         $this->assertSame(3, $handler->countParams($function));
     }
+
+    public function testItShouldFetchStringPriority()
+    {
+        $function = function() {
+            // do something
+        };
+
+        $handler = new Handler([], $function, 'bar');
+
+        $c = $this->createMock(ContainerInterface::class);
+        $c->expects($this->once())->method('get')->with('bar')->willReturn(42);
+
+        $handler->attach('foo', $c);
+
+        $this->assertTrue(has_filter('foo'));
+    }
 }

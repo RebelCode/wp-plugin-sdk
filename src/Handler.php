@@ -16,14 +16,20 @@ class Handler extends Service
     /** @var callable */
     public $handler;
 
-    /** @var int */
+    /** @var int|string */
     public $priority;
 
     /** @var int|null */
     public $numArgs;
 
-    /** Constructor. */
-    public function __construct(array $deps, callable $handler, int $priority = 10, ?int $numArgs = null)
+    /**
+     * Constructor.
+     *
+     * @param int|string $priority The priority at which the handler should be called.
+     *        If a string is passed, the priority will be fetched from the container
+     *        using the string as the service ID.
+     */
+    public function __construct(array $deps, callable $handler, $priority = 10, ?int $numArgs = null)
     {
         parent::__construct($deps);
         $this->handler = $handler;
@@ -34,7 +40,13 @@ class Handler extends Service
     /** Attaches the handler to a WordPress hook. */
     public function attach(string $hook, ContainerInterface $c)
     {
-        add_filter($hook, $this($c), $this->priority ?? 10, $this->numArgs ?? 1);
+        if (is_string($this->priority)) {
+            $priority = $c->get($this->priority);
+        } else {
+            $priority = $this->priority;
+        }
+
+        add_filter($hook, $this($c), $priority, $this->numArgs ?? 1);
     }
 
     /** Returns the handler function. */
