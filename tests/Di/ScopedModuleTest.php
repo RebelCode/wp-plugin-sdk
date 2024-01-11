@@ -104,6 +104,24 @@ class ScopedModuleTest extends TestCase
         $this->assertEquals($expected, $module->getHooks());
     }
 
+    public function testItShouldPrefixHandlerStringPriority()
+    {
+        $fn = function () {};
+        $handler = new Handler([], $fn, 'priority');
+
+        $inner = $this->createMock(Module::class);
+        $inner->expects($this->once())->method('getHooks')->willReturn([
+            'foo' => [$handler],
+        ]);
+        $module = new ScopedModule('pre_', $inner);
+
+        $expected = [
+            'foo' => [new Handler([], $fn, 'pre_priority')],
+        ];
+
+        $this->assertEquals($expected, $module->getHooks());
+    }
+
     public function testItShouldRunWithScopedServices()
     {
         $c = $this->createMock(ContainerInterface::class);

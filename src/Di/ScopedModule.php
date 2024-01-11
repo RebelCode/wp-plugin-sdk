@@ -150,7 +150,13 @@ class ScopedModule extends Module
             }
 
             foreach ($handlers as $handler) {
-                $results[$hook][] = $this->prefixDependencies($handler);
+                $newHandler = $this->prefixDependencies($handler);
+
+                if (is_string($newHandler->priority)) {
+                    $newHandler->priority = $this->applyPrefix($newHandler->priority);
+                }
+
+                $results[$hook][] = $newHandler;
             }
         }
 
