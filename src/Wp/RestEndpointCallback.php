@@ -46,12 +46,14 @@ class RestEndpointCallback
 
             $data = $response->get_data();
 
-            // Turn the data into an array
-            $arrayData = ($data instanceof Traversable)
-                ? iterator_to_array($data)
-                : (array) $data;
+            if (!is_scalar($data)) {
+                // Turn the data into an array
+                $arrayData = ($data instanceof Traversable)
+                    ? iterator_to_array($data)
+                    : (array) $data;
 
-            $response->set_data($arrayData);
+                $response->set_data($arrayData);
+            }
 
             $this->responseSent = true;
             $this->unregisterErrorHandler();

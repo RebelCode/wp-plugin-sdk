@@ -38,8 +38,9 @@ class RestEndpointCallbackTest extends TestCase
 
     public function testItShouldCastResponseDataToArray()
     {
+        $data = ['foo' => 'bar'];
         $request = $this->createMock(WP_REST_Request::class);
-        $response = new WP_REST_Response((object) $data = ['foo' => 'bar']);
+        $response = new WP_REST_Response((object) $data);
 
         $handler = $this->createMock(RestEndpointHandler::class);
         $handler->expects($this->once())
@@ -50,6 +51,22 @@ class RestEndpointCallbackTest extends TestCase
         $callback = new RestEndpointCallback($handler);
 
         $this->assertEquals($data, $callback($request)->get_data());
+    }
+
+    public function testItShouldNotCastScalarDataToArray()
+    {
+        $request = $this->createMock(WP_REST_Request::class);
+        $response = new WP_REST_Response('foo');
+
+        $handler = $this->createMock(RestEndpointHandler::class);
+        $handler->expects($this->once())
+                ->method('handle')
+                ->with($request)
+                ->willReturn($response);
+
+        $callback = new RestEndpointCallback($handler);
+
+        $this->assertEquals('foo', $callback($request)->get_data());
     }
 
     public function testItShouldTurnIteratorResponseDataToArray()
