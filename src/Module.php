@@ -39,9 +39,9 @@ class Module implements IteratorAggregate
     /**
      * Returns the WordPress hooks for this module.
      *
-     * @return array<Handler|Handler[]>
+     * @return iterable<Handler|Handler[]>
      */
-    public function getHooks(): array
+    public function getHooks(): iterable
     {
         return [];
     }
@@ -49,9 +49,9 @@ class Module implements IteratorAggregate
     /**
      * Returns the factories for the module's services.
      *
-     * @return Service[]
+     * @return iterable<Service>
      */
-    public function getFactories(): array
+    public function getFactories(): iterable
     {
         return [];
     }
@@ -59,9 +59,9 @@ class Module implements IteratorAggregate
     /**
      * Returns the extensions for other modules' services.
      *
-     * @return Extension[]
+     * @return iterable<Extension>
      */
-    public function getExtensions(): array
+    public function getExtensions(): iterable
     {
         return [];
     }

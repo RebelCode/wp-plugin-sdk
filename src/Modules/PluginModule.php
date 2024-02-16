@@ -11,6 +11,7 @@ use RebelCode\WpSdk\Module;
 use RebelCode\WpSdk\Plugin;
 use RebelCode\WpSdk\Wp\AbstractOption;
 use RebelCode\WpSdk\Wp\Transient;
+
 use function plugin_dir_url;
 
 /** A module that adds information about the plugin. */
@@ -51,77 +52,50 @@ class PluginModule extends Module
     }
 
     /** @inheritDoc */
-    public function getHooks(): array
+    public function getHooks(): iterable
     {
-        return [
-            'admin_init' => [
-                new Handler(
-                    ['short_id', 'activation_marker'],
-                    function (string $prefix, AbstractOption $marker) {
-                        if (is_admin() && $marker->getValue()) {
-                            $marker->delete();
-                            do_action($prefix . $this->serviceDelim . 'activation');
-                        }
+        yield 'admin_init' => [
+            new Handler(
+                ['short_id', 'activation_marker'],
+                function (string $prefix, AbstractOption $marker) {
+                    if (is_admin() && $marker->getValue()) {
+                        $marker->delete();
+                        do_action($prefix . $this->serviceDelim . 'activation');
                     }
-                ),
-            ],
+                }
+            ),
         ];
     }
 
     /** @inheritDoc */
-    public function getFactories(): array
+    public function getFactories(): iterable
     {
-        return [
-            'file_path' => new Value($this->filePath),
-            'dir_path' => new Value(dirname($this->filePath)),
-            'dir_url' => new Value(rtrim(plugin_dir_url($this->filePath), '/')),
-            'json_file' => new Value($this->filePath . '/plugin.json'),
+        yield 'file_path' => new Value($this->filePath);
+        yield 'dir_path' => new Value(dirname($this->filePath));
+        yield 'dir_url' => new Value(rtrim(plugin_dir_url($this->filePath), '/'));
+        yield 'json_file' => new Value($this->filePath . '/plugin.json');
 
-            'meta' => new Factory(['json_file'], function (string $jsonFile) {
-                return is_readable($jsonFile)
-                    ? PluginMeta::parseFromJsonFile($jsonFile)
-                    : PluginMeta::parseFromPluginHeader($this->filePath);
-            }),
-            'slug' => new Factory(['meta'], function (PluginMeta $meta) {
-                return $meta->slug;
-            }),
-            'short_id' => new Factory(['meta'], function (PluginMeta $meta) {
-                return $meta->shortId;
-            }),
-            'name' => new Factory(['meta'], function (PluginMeta $meta) {
-                return $meta->name;
-            }),
-            'description' => new Factory(['meta'], function (PluginMeta $meta) {
-                return $meta->description;
-            }),
-            'version' => new Factory(['meta'], function (PluginMeta $meta) {
-                return $meta->version;
-            }),
-            'url' => new Factory(['meta'], function (PluginMeta $meta) {
-                return $meta->url;
-            }),
-            'author' => new Factory(['meta'], function (PluginMeta $meta) {
-                return $meta->author;
-            }),
-            'textDomain' => new Factory(['meta'], function (PluginMeta $meta) {
-                return $meta->textDomain;
-            }),
-            'domainPath' => new Factory(['meta'], function (PluginMeta $meta) {
-                return $meta->domainPath;
-            }),
-            'min_php_version' => new Factory(['meta'], function (PluginMeta $meta) {
-                return $meta->minPhpVersion;
-            }),
-            'min_wp_version' => new Factory(['meta'], function (PluginMeta $meta) {
-                return $meta->minWpVersion;
-            }),
-            'extra' => new Factory(['meta'], function (PluginMeta $meta) {
-                return $meta->extra;
-            }),
+        yield 'meta' => new Factory(['json_file'], function (string $jsonFile) {
+            if (is_readable($jsonFile)) {
+                return PluginMeta::parseFromJsonFile($jsonFile);
+            } else {
+                return PluginMeta::parseFromPluginHeader($this->filePath);
+            }
+        });
 
-            'activation_marker' => new Factory(['short_id'], function (string $short_id) {
-                return new Transient("{$short_id}_activation", Transient::bool(), 60, false);
-            }),
-        ];
+        yield 'slug' => new Factory(['meta'], fn (PluginMeta $meta) => $meta->slug);
+        yield 'short_id' => new Factory(['meta'], fn (PluginMeta $meta) => $meta->shortId);
+        yield 'name' => new Factory(['meta'], fn (PluginMeta $meta) => $meta->name);
+        yield 'description' => new Factory(['meta'], fn (PluginMeta $meta) => $meta->description);
+        yield 'version' => new Factory(['meta'], fn (PluginMeta $meta) => $meta->version);
+        yield 'url' => new Factory(['meta'], fn (PluginMeta $meta) => $meta->url);
+        yield 'author' => new Factory(['meta'], fn (PluginMeta $meta) => $meta->author);
+        yield 'textDomain' => new Factory(['meta'], fn (PluginMeta $meta) => $meta->textDomain);
+        yield 'domainPath' => new Factory(['meta'], fn (PluginMeta $meta) => $meta->domainPath);
+        yield 'min_php_version' => new Factory(['meta'], fn (PluginMeta $meta) => $meta->minPhpVersion);
+        yield 'min_wp_version' => new Factory(['meta'], fn (PluginMeta $meta) => $meta->minWpVersion);
+        yield 'extra' => new Factory(['meta'], fn (PluginMeta $meta) => $meta->extra);
+
+        yield 'activation_marker' => new Factory(['short_id'], fn (string $short_id) => new Transient("{$short_id}_activation", Transient::bool(), 60, false));
     }
 }
